@@ -28,9 +28,13 @@ class TableGenerator {
      */
     insert(tableHeight, tableDate, select) {
 
-        for (let i = 3 + 1; i < 3 + tableHeight; i ++) {
+        for (let i = 3 + 1; i < tableHeight + 3; i ++) {
             this.push(i, select)
             this.output(i, {year: tableDate.year, month: tableDate.month, date: i - 3 + 1})
+
+            if (i === tableHeight + 3 - 1) {
+                this.sheet.getRange(i + 1, 1).setValue('-')
+            }
         }
     }
 
@@ -76,7 +80,6 @@ class TableGenerator {
         let i = 1
 
         while (point !== '-') {
-            console.log(i + ' ' + point)
             point = this.sheet.getRange(1, i).getValue()
             i ++
         }
