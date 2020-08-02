@@ -12,7 +12,7 @@ logs/
 #
 # dotenv files
 #
-.env
+#.env
 
 #
 # Node.js files
@@ -23,8 +23,8 @@ logs/
 #
 # PHP files
 #
-/vendor/
-/composer.lock
+#/vendor/
+#/composer.lock
 
 #
 # OS generated files

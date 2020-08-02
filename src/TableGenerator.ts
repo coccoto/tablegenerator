@@ -45,8 +45,8 @@ export default class TableGenerator {
     private select(tableWidth: number): Spreadsheet.Range {
 
         const rowFrom: number = 3
-        const rowTo: number = 1
         const columnFrom: number = 1
+        const rowTo: number = 1
         const columnTo: number = tableWidth
 
         return this.sheet.getRange(rowFrom, columnFrom, rowTo, columnTo)
