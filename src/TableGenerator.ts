@@ -10,6 +10,9 @@ export default class TableGenerator {
         this.sheet = SpreadsheetApp.getActiveSheet()
     }
 
+    /**
+     * 日付を差し込む
+     */
     private insert(row: number, tableDate: {[name: string]: string}): void {
 
         const date = new Date(Number(tableDate.year), Number(tableDate.month) - 1, Number(tableDate.date))
@@ -25,7 +28,10 @@ export default class TableGenerator {
         selected.copyTo(address)
     }
 
-    private assemble(tableDate: {[name: string]: string}, tableHeight: number, selected: Spreadsheet.Range): void {
+    /**
+     * テーブルを組み立てる
+     */
+    private assemble(tableDate: {[name: string]: string}, tableHeight: number, tableWidth: number, selected: Spreadsheet.Range): void {
 
         const ROW_INIT: number = 3
         let i: number = ROW_INIT
@@ -36,8 +42,10 @@ export default class TableGenerator {
             this.insert(i, tableDate)
             i ++
 
+            // 最終行
             if (! (i !== tableHeight + ROW_INIT)) {
                 this.sheet.getRange(i, 1).setValue('-')
+                this.sheet.getRange(i, 1, 1, tableWidth).setBorder(true, true, true, true, true, true)
             }
         }
     }
@@ -52,6 +60,9 @@ export default class TableGenerator {
         return this.sheet.getRange(rowFrom, columnFrom, rowTo, columnTo)
     }
 
+    /**
+     * テーブルの横幅を取得する
+     */
     private tableWidth(i: number = 3): number {
 
         let endPoint: string = this.sheet.getRange(1, i).getValue()
@@ -63,12 +74,18 @@ export default class TableGenerator {
         return this.tableWidth(i)
     }
 
+    /**
+     * 日付から生成するテーブルの縦幅を取得する
+     */
     private tableHeight(tableDate: {[name: string]: string}): number {
 
         const date = new Date(Number(tableDate.year), Number(tableDate.month), 0)
         return date.getDate()
     }
 
+    /**
+     * テーブルにセットされている年月を取得する
+     */
     private tableDate(): {[name: string]: string} {
 
         return {
@@ -85,6 +102,6 @@ export default class TableGenerator {
 
         const selected: Spreadsheet.Range = this.select(tableWidth)
 
-        this.assemble(tableDate, tableHeight, selected)
+        this.assemble(tableDate, tableHeight, tableWidth, selected)
     }
 }
