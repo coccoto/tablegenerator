@@ -7,7 +7,8 @@
     "build": "webpack --mode development",
     "build:production": "webpack --mode production",
     "clasp:push": "clasp push",
-    "deploy": "run-s build:production clasp:push"
+    "deploy": "run-s build:production clasp:push",
+    "clasp:login": "clasp login"
   },
   "keywords": [],
   "author": "",

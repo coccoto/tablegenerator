@@ -15,7 +15,7 @@ export default class TableGenerator {
      * 
      * @return {boolena} success
      */
-    private insert(row: number, tableDate: string[][]): boolean {
+    private insert(row: number, tableDate: string[][], rule: string): boolean {
 
         this.sheet.getRange(row, 1, 1, 2).setValues(tableDate)
         return true
@@ -37,9 +37,10 @@ export default class TableGenerator {
 
         const date = new Date(Number(tableDate.year), Number(tableDate.month) - 1, Number(tableDate.date))
         const day = date.getDay()
-        const weeks: string[] = ['日', '月', '火', '水', '木', '金', '土']
+        // 曜日
+        const WEEKS: string[] = ['日', '月', '火', '水', '木', '金', '土']
 
-        return [[tableDate.date, weeks[day]]]
+        return [[tableDate.date, WEEKS[day]]]
     }
 
     /**
@@ -67,17 +68,17 @@ export default class TableGenerator {
             // ルールに合致もしくはルール未指定時、レコードを追加
             if (createRule === currentDate[0][1] || createRule === '') {
                 this.push(c, selected)
-                this.insert(c, currentDate)
+                this.insert(c, currentDate, createRule)
                 // 現在列をインクリメント
                 c ++
             }
+            // ループカウンターをインクリメント
+            i ++
             // 最終行
             if (! (i !== tableHeight + ROW_INIT)) {
                 this.sheet.getRange(c, 1).setValue('-')
                 this.sheet.getRange(c, 1, 1, tableWidth).setBorder(true, true, true, true, true, true)
             }
-            // ループカウンターをインクリメント
-            i ++
         }
     }
 
