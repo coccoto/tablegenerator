@@ -2,7 +2,7 @@
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // modules
 import Assemble from '@src/app/Assemble'
-import Fetch from '@src/app/Fetch'
+import FetchRule from '@src/app/FetchRule'
 // helper
 import TableMeasure from '@src/app/helper/TableMeasure'
 
@@ -11,24 +11,16 @@ export default class TableGenerator {
     private sheet: Spreadsheet.Sheet
 
     private assemble: Assemble
-    private fetch: Fetch
+    private fetchRule: FetchRule
     private tableMeasure: TableMeasure
-
-    private iniStartRow: number
-    private iniRulePosition: number[]
-    private masterWeekName: string[]
 
     public constructor() {
 
         this.sheet = SpreadsheetApp.getActiveSheet()
 
         this.assemble = new Assemble(this.sheet)
-        this.fetch = new Fetch(this.sheet)
+        this.fetchRule = new FetchRule(this.sheet)
         this.tableMeasure = new TableMeasure(this.sheet)
-
-        this.iniStartRow = 0
-        this.iniRulePosition = []
-        this.masterWeekName = []
     }
 
     private selectBase(row: number, tableWidth: number): Spreadsheet.Range {
@@ -48,20 +40,20 @@ export default class TableGenerator {
 
     public main(): void {
 
-        const tableDate: {[name: string]: number} = this.fetch.tableDate()
+        const INI_START_ROW: number = 3
+        const INI_POSITION_RULE: number[] = [2, 2]
+
+        const tableDate: {[name: string]: number} = this.fetchRule.tableDate()
         const maxHeight: number = this.monthMeasure(tableDate)
-        const tableWidth: number = this.tableMeasure.width(this.iniStartRow, 1)
+        const tableWidth: number = this.tableMeasure.width(INI_START_ROW, 1)
+        const selected: Spreadsheet.Range = this.selectBase(INI_START_ROW, tableWidth)
 
-        const selected: Spreadsheet.Range = this.selectBase(this.iniStartRow, tableWidth)
-
-        this.assemble.setIni(this.iniStartRow, this.iniRulePosition, this.masterWeekName)
-        this.assemble.main(tableDate, maxHeight, tableWidth, selected)
+        const ruleBook: string = this.assemble.readRule(INI_POSITION_RULE[0], INI_POSITION_RULE[1])
+        this.assemble.main(INI_START_ROW, tableDate, maxHeight, tableWidth, ruleBook, selected)
     }
 
-    public setIni(INI_START_ROW: number, INI_RULE_POSITION: number[], MASTER_WEEK_NAME: string[]) {
+    public setMaster(master: {[name: string]: string[]}): void {
 
-        this.iniStartRow = INI_START_ROW
-        this.iniRulePosition = INI_RULE_POSITION
-        this.masterWeekName = MASTER_WEEK_NAME
+        this.assemble.setMaster(master)
     }
 }

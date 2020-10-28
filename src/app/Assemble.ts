@@ -5,22 +5,24 @@ export default class Assemble {
 
     private sheet: Spreadsheet.Sheet
 
-    private iniStartRow: number
-    private iniRulePosition: number[]
-    private masterWeekName: string[]
+    private master: {[name: string]: string[]}
 
     public constructor(sheet: Spreadsheet.Sheet) {
 
         this.sheet = sheet
 
-        this.iniStartRow = 0
-        this.iniRulePosition = []
-        this.masterWeekName = []
+        this.master = {}
+    }
+
+    private refresh(row: number, width: number): void {
+
+        this.sheet.getRange(row, 1).setValue('-')
+        this.sheet.getRange(row, 1, 1, width).setBorder(true, true, true, true, true, true)
     }
 
     private decorateRecord(currentRow: number, currentDate: string[][]) {
 
-        
+        this.sheet.getRange(currentRow, 1, 1, 2).setValues(currentDate)
     }
 
     private addRecord(currentRow: number, baseSelected: Spreadsheet.Range): void {
@@ -31,47 +33,49 @@ export default class Assemble {
 
     private prepareDate(tableDate: {[name: string]: number}): string[][] {
 
-        const date = new Date(Number(tableDate.year), Number(tableDate.month) - 1, Number(tableDate.date))
-        const week = date.getDay()
+        const date: Date = new Date(Number(tableDate.year), Number(tableDate.month) - 1, Number(tableDate.date))
+        const weekNumber: number = date.getDay()
 
-        const WEEKS
-
-        return [[tableDate.date, WEEKS[week]]]
+        return [[String(tableDate.date), this.master.WEEKS[weekNumber]]]
     }
 
-    private insert(tableDate: {[name: string]: number}, baseSelected: Spreadsheet.Range, i: number, currentRow: number) {
+    private work(tableDate: {[name: string]: number}, height: number, ruleBook: string, baseSelected: Spreadsheet.Range, i: number, currentRow: number = i): number {
 
-        if () {
-            return
+        if (i > height) {
+            return currentRow
         }
 
-        tableDate.date = (i - this.iniStartRow + 1)
+        tableDate.date = (i - i + 1)
         const currentDate = this.prepareDate(tableDate)
 
-        this.addRecord(currentRow, baseSelected)
-        this.decorateRecord(currentRow, currentDate)
+        // rule week
+        if (ruleBook === currentDate[0][1] || ruleBook === '') {
+            this.addRecord(currentRow, baseSelected)
+            this.decorateRecord(currentRow, currentDate)
+            currentRow ++
+        }
+        // add loop counter
+        i ++
+        return this.work(tableDate, height, ruleBook, baseSelected, i, currentRow)
     }
 
-    private readRule(): string {
+    public readRule(row: number, column: number): string {
 
         const rule
-        = this.sheet.getRange(this.iniRulePosition[0], this.iniRulePosition[1]).getValue()
+        = this.sheet.getRange(row, column).getValue()
         return rule
     }
 
-    public main(tableDate: {[name: string]: number}, height: number, width: number, baseSelected: Spreadsheet.Range): void {
+    public main(iniRow: number, tableDate: {[name: string]: number}, height: number, width: number, ruleBook: string, baseSelected: Spreadsheet.Range): void {
 
-        let i: number = this.iniStartRow
-        let currentRow: number = this.iniStartRow
+        let i: number = iniRow
 
-        const ruleBook = this.readRule()
-
+        const currentRow = this.work(tableDate, height, ruleBook, baseSelected, i)
+        this.refresh(currentRow, width)
     }
 
-    public setIni(startRow: number, rulePosition: number[], masterWeekName: string[]): void {
+    public setMaster(master: {[name: string]: string[]}): void {
 
-        this.iniStartRow = startRow
-        this.iniRulePosition = rulePosition
-        this.masterWeekName = masterWeekName
+        this.master = master
     }
 }

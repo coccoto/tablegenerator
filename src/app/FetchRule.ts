@@ -1,7 +1,7 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 
-export default class Fetch {
+export default class FetchRule {
 
     private sheet: Spreadsheet.Sheet
 
