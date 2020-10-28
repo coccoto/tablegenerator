@@ -14,6 +14,9 @@ export default class Assemble {
         this.master = {}
     }
 
+    /**
+     * 最終行にレコードを追加
+     */
     private refresh(row: number, width: number): void {
 
         this.sheet.getRange(row, 1).setValue('-')
@@ -25,10 +28,10 @@ export default class Assemble {
         this.sheet.getRange(currentRow, 1, 1, 2).setValues(currentDate)
     }
 
-    private addRecord(currentRow: number, baseSelected: Spreadsheet.Range): void {
+    private addRecord(currentRow: number, baseRecord: Spreadsheet.Range): void {
 
         const address: Spreadsheet.Range = this.sheet.getRange(currentRow, 1)
-        baseSelected.copyTo(address)
+        baseRecord.copyTo(address)
     }
 
     private prepareDate(tableDate: {[name: string]: number}): string[][] {
@@ -39,7 +42,12 @@ export default class Assemble {
         return [[String(tableDate.date), this.master.WEEKS[weekNumber]]]
     }
 
-    private work(iniRow: number, tableDate: {[name: string]: number}, height: number, ruleBook: string, baseSelected: Spreadsheet.Range, i: number, currentRow: number = i): number {
+    /**
+     * @再帰処理
+     * 
+     * テーブルにレコードを追加
+     */
+    private work(iniRow: number, tableDate: {[name: string]: number}, height: number, ruleBook: string, baseRecord: Spreadsheet.Range, i: number, currentRow: number = i): number {
 
         if (i > height + iniRow) {
             return currentRow
@@ -48,17 +56,21 @@ export default class Assemble {
         tableDate.date = (i - iniRow + 1)
         const currentDate = this.prepareDate(tableDate)
 
-        // rule week
+        // ルールブックのデータと一致 もしくは ルールブックにデータがない
         if (ruleBook === currentDate[0][1] || ruleBook === '') {
-            this.addRecord(currentRow, baseSelected)
+            this.addRecord(currentRow, baseRecord)
             this.decorateRecord(currentRow, currentDate)
+            // 現在列カウンター
             currentRow ++
         }
-        // add loop counter
+        // ループカウンター
         i ++
-        return this.work(iniRow, tableDate, height, ruleBook, baseSelected, i, currentRow)
+        return this.work(iniRow, tableDate, height, ruleBook, baseRecord, i, currentRow)
     }
 
+    /**
+     * テーブル作成ルールを取得
+     */
     public readRule(row: number, column: number): string {
 
         const rule
@@ -66,11 +78,11 @@ export default class Assemble {
         return rule
     }
 
-    public main(iniRow: number, tableDate: {[name: string]: number}, height: number, width: number, ruleBook: string, baseSelected: Spreadsheet.Range): void {
+    public main(iniRow: number, tableDate: {[name: string]: number}, height: number, width: number, ruleBook: string, baseRecord: Spreadsheet.Range): void {
 
         let i: number = iniRow
 
-        const currentRow: number = this.work(iniRow, tableDate, height, ruleBook, baseSelected, i)
+        const currentRow: number = this.work(iniRow, tableDate, height, ruleBook, baseRecord, i)
         this.refresh(currentRow, width)
     }
 

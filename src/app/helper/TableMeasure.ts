@@ -40,7 +40,7 @@ export default class TableMeasure {
         return this.width(row, column)
     }
 
-    public height(row: number, column: number): number {
+    public height(row: number = 1, column: number = 1): number {
 
         this.exception(row)
 

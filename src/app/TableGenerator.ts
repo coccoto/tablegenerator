@@ -23,7 +23,10 @@ export default class TableGenerator {
         this.tableMeasure = new TableMeasure(this.sheet)
     }
 
-    private selectBase(row: number, tableWidth: number): Spreadsheet.Range {
+    /**
+     * コピー元レコードを選択
+     */
+    private selectBaseRecord(row: number, tableWidth: number): Spreadsheet.Range {
 
         const column: number = 1
         const numRows: number = 1
@@ -32,6 +35,9 @@ export default class TableGenerator {
         return this.sheet.getRange(row, column, numRows, numColumns)
     }
 
+    /**
+     * 指定した月の日数を取得
+     */
     private monthMeasure(tableDate: {[name: string]: number}): number {
 
         const date = new Date(tableDate.year, tableDate.month, 0)
@@ -46,10 +52,11 @@ export default class TableGenerator {
         const tableDate: {[name: string]: number} = this.fetchRule.tableDate()
         const maxHeight: number = this.monthMeasure(tableDate)
         const tableWidth: number = this.tableMeasure.width(1, 1)
-        const selected: Spreadsheet.Range = this.selectBase(INI_START_ROW, tableWidth)
+        const selectedBaseRecord: Spreadsheet.Range = this.selectBaseRecord(INI_START_ROW, tableWidth)
 
+        // テーブル作成ルールを取得
         const ruleBook: string = this.assemble.readRule(INI_POSITION_RULE[0], INI_POSITION_RULE[1])
-        this.assemble.main(INI_START_ROW, tableDate, maxHeight, tableWidth, ruleBook, selected)
+        this.assemble.main(INI_START_ROW, tableDate, maxHeight, tableWidth, ruleBook, selectedBaseRecord)
     }
 
     public setMaster(master: {[name: string]: string[]}): void {
