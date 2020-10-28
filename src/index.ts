@@ -2,13 +2,13 @@ import TableGenerator from '@src/app/TableGenerator'
 
 const MASTER_NAME: {[name: string]: string[]} = {
     WEEKS: [
-        '=master!C2',
-        '=master!C3',
-        '=master!C4',
-        '=master!C5',
-        '=master!C6',
-        '=master!C7',
-        '=master!C8',
+        '日',
+        '月',
+        '火',
+        '水',
+        '木',
+        '金',
+        '土',
     ]
 }
 

@@ -25,8 +25,8 @@ export default class TableGenerator {
 
     private selectBase(row: number, tableWidth: number): Spreadsheet.Range {
 
-        const column: number = 0
-        const numRows: number = 0
+        const column: number = 1
+        const numRows: number = 1
         const numColumns: number = tableWidth
 
         return this.sheet.getRange(row, column, numRows, numColumns)
@@ -45,7 +45,7 @@ export default class TableGenerator {
 
         const tableDate: {[name: string]: number} = this.fetchRule.tableDate()
         const maxHeight: number = this.monthMeasure(tableDate)
-        const tableWidth: number = this.tableMeasure.width(INI_START_ROW, 1)
+        const tableWidth: number = this.tableMeasure.width(1, 1)
         const selected: Spreadsheet.Range = this.selectBase(INI_START_ROW, tableWidth)
 
         const ruleBook: string = this.assemble.readRule(INI_POSITION_RULE[0], INI_POSITION_RULE[1])

@@ -27,7 +27,7 @@ export default class Assemble {
 
     private addRecord(currentRow: number, baseSelected: Spreadsheet.Range): void {
 
-        const address = this.sheet.getRange(currentRow, 1)
+        const address: Spreadsheet.Range = this.sheet.getRange(currentRow, 1)
         baseSelected.copyTo(address)
     }
 
@@ -39,13 +39,13 @@ export default class Assemble {
         return [[String(tableDate.date), this.master.WEEKS[weekNumber]]]
     }
 
-    private work(tableDate: {[name: string]: number}, height: number, ruleBook: string, baseSelected: Spreadsheet.Range, i: number, currentRow: number = i): number {
+    private work(iniRow: number, tableDate: {[name: string]: number}, height: number, ruleBook: string, baseSelected: Spreadsheet.Range, i: number, currentRow: number = i): number {
 
-        if (i > height) {
+        if (i > height + iniRow) {
             return currentRow
         }
 
-        tableDate.date = (i - i + 1)
+        tableDate.date = (i - iniRow + 1)
         const currentDate = this.prepareDate(tableDate)
 
         // rule week
@@ -56,7 +56,7 @@ export default class Assemble {
         }
         // add loop counter
         i ++
-        return this.work(tableDate, height, ruleBook, baseSelected, i, currentRow)
+        return this.work(iniRow, tableDate, height, ruleBook, baseSelected, i, currentRow)
     }
 
     public readRule(row: number, column: number): string {
@@ -70,7 +70,7 @@ export default class Assemble {
 
         let i: number = iniRow
 
-        const currentRow = this.work(tableDate, height, ruleBook, baseSelected, i)
+        const currentRow: number = this.work(iniRow, tableDate, height, ruleBook, baseSelected, i)
         this.refresh(currentRow, width)
     }
 

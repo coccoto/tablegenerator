@@ -13,13 +13,15 @@ export default class TableMeasure {
     public exception(i: number): void {
 
         if (i > 100) {
-            throw new Error('Error i > 100')
+            throw new Error('TableMeasure i > 100')
         }
     }
 
-    private hasEndPoint(row:number, column: number): boolean {
+    private hasEndPoint(row: number = 1, column: number = 1): boolean {
 
         let endPoint: string = this.sheet.getRange(row, column).getValue()
+
+        console.log(row + ' ' + column + ' ' + endPoint)
 
         if (endPoint === '-') {
             return true
@@ -27,7 +29,7 @@ export default class TableMeasure {
         return false
     }
 
-    public width(row: number, column: number): number {
+    public width(row: number = 1, column: number = 1): number {
 
         this.exception(column)
 
