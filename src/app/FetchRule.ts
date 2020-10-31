@@ -23,7 +23,7 @@ export default class FetchRule {
         const values: number[][] = this.sheet.getRange(1, 1, 1, 2).getValues()
 
         return {
-            year: Number('20' + String(values[0][1])),
+            year: Number('20' + String(values[0][0])),
             month: Number(values[0][1]),
         }
     }

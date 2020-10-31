@@ -21,8 +21,6 @@ export default class TableMeasure {
 
         let endPoint: string = this.sheet.getRange(row, column).getValue()
 
-        console.log(row + ' ' + column + ' ' + endPoint)
-
         if (endPoint === '-') {
             return true
         }

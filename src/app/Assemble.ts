@@ -23,17 +23,26 @@ export default class Assemble {
         this.sheet.getRange(row, 1, 1, width).setBorder(true, true, true, true, true, true)
     }
 
+    /**
+     * レコードに情報を書き込む
+     */
     private decorateRecord(currentRow: number, currentDate: string[][]) {
 
         this.sheet.getRange(currentRow, 1, 1, 2).setValues(currentDate)
     }
 
+    /**
+     * レコードを追加
+     */
     private addRecord(currentRow: number, baseRecord: Spreadsheet.Range): void {
 
         const address: Spreadsheet.Range = this.sheet.getRange(currentRow, 1)
         baseRecord.copyTo(address)
     }
 
+    /**
+     * レコードに書き込む情報を取得
+     */
     private prepareDate(tableDate: {[name: string]: number}): string[][] {
 
         const date: Date = new Date(Number(tableDate.year), Number(tableDate.month) - 1, Number(tableDate.date))
