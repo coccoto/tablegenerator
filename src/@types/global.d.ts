@@ -1,3 +1,4 @@
 declare const global: {
-    TableGenerator: object
+    TableGenerator: object,
+    doGet: object
 }

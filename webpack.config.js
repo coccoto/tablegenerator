@@ -48,6 +48,11 @@ module.exports = (env, argv) => {
                         to: 'appsscript.json',
                         context: Path.resolve('.', 'src')
                     },
+                    {
+                        from: 'notice.html',
+                        to: 'notice.html',
+                        context: Path.resolve('.', 'src')
+                    }
                 ]
             })
         ],
