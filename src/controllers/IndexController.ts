@@ -35,8 +35,10 @@ export default class IndexController {
 
         const iniValues: {[key: string]: number} = this.tableReferenceModel.bundleIniValues()
 
-        this.baseGenerate(iniValues.bottomHeight, iniValues.workTableNum)
-        this.assemble(iniValues.weekRule)
+        if (this.dateTableModel.isCreated()) {
+            this.baseGenerate(iniValues.bottomHeight, iniValues.workTableNum)
+            this.assemble(iniValues.weekRule)
+        }
     }
 
     private baseGenerate(bottomHeight: number, workTableNum: number): void {

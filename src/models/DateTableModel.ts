@@ -54,4 +54,17 @@ export default class DateTableModel {
         const fromWorkColumnPosition: number = Number(this.queryModel.getIniValue('fromWorkColumnPosition'))
         return fromWorkColumnPosition - 1
     }
+
+    public isCreated(): boolean {
+
+        const fromWorkRowPosition: number = Number(this.queryModel.getIniValue('fromWorkRowPosition'))
+        const enterDateRowPosition: number = fromWorkRowPosition + 1
+    
+        const value = this.sheet.getRange(enterDateRowPosition, 1).getValue()
+
+        if (value === '') {
+            return true
+        }
+        return false
+    }
 }
