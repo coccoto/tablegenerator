@@ -16,7 +16,7 @@ export default class WorkTableModel {
         this.queryModel = queryModel
     }
 
-    public getIniPopsition(): {[key: string]: number} {
+    public getWorkTableIniPosition(): Associative {
 
         const fromWorkRowPosition = 1
         const fromWorkColumnPosition = Number(this.queryModel.getIniValue('fromWorkColumnPosition'))
@@ -27,7 +27,7 @@ export default class WorkTableModel {
         }
     }
 
-    public getSubIniPopsition(workTableIniColumnPosition: number, workTableWidth: number): {[key: string]: number} {
+    public getOptionTableIniPosition(workTableIniColumnPosition: number, workTableWidth: number): Associative {
 
         const fromSubWorkRowPosition = 1
         const fromSubWorkColumnPosition = workTableIniColumnPosition + workTableWidth
@@ -38,7 +38,7 @@ export default class WorkTableModel {
         }
     }
 
-    public getWorkTableSize(bottomHeight: number): {[key: string]: number} {
+    public getWorkTableSize(bottomHeight: number): Associative {
 
         const workTableHeight: number = this.getWorkTableHeight(bottomHeight)
         const workTableWidth: number = this.getWorkTableWidth()
@@ -51,7 +51,7 @@ export default class WorkTableModel {
 
     private getWorkTableHeight(bottomHeight: number): number {
 
-        const sheetSize: {[key: string]: number} = this.queryModel.getSheetSize()
+        const sheetSize: Associative = this.queryModel.getSheetSize()
         return sheetSize.height + bottomHeight
     }
 

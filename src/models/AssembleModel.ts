@@ -1,83 +1,70 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
-import ErrorHandler from "@src/models/common/ErrorHandler"
+import type QueryModel from '@src/models/common/QueryModel'
+import DateTableModel from '@src/models/DateTableModel'
+import TableOperateModel from "@src/models/TableOperateModel"
 
 export default class AssembleModel {
 
     private readonly sheet: Spreadsheet.Sheet
 
-    private readonly errorHandler: ErrorHandler
+    private readonly queryModel: QueryModel
+    private readonly dateTableModel: DateTableModel
+    private readonly tableOperateModel: TableOperateModel
 
-    public constructor(sheet: Spreadsheet.Sheet) {
+    public constructor(sheet: Spreadsheet.Sheet, queryModel: QueryModel) {
 
         this.sheet = sheet
 
-        this.errorHandler = new ErrorHandler()
+        this.queryModel = queryModel
+        this.dateTableModel = new DateTableModel(this.sheet, this.queryModel)
+        this.tableOperateModel = new TableOperateModel(this.sheet)
     }
 
-    public moveTo(targetRange: Spreadsheet.Range, targetRow: number, targetColumn: number): void {
+    public main(sheetSize: Associative, tableDateInfo: Associative, bottomHeight: number): string[][] {
 
-        const address: Spreadsheet.Range = this.sheet.getRange(targetRow, targetColumn)
-        targetRange.moveTo(address)
+        const targetTable: Spreadsheet.Range = this.getTargetTable(sheetSize, bottomHeight)
+        return this.assemble(targetTable, tableDateInfo, targetTable.getRow())
     }
 
-    public copyTo(targetRange: Spreadsheet.Range, targetRow: number, targetColumn: number): void {
+    private getTargetTable(sheetSize: Associative, bottomHeight: number): Spreadsheet.Range {
 
-        const address: Spreadsheet.Range = this.sheet.getRange(targetRow, targetColumn)
-        targetRange.copyTo(address)
+        const fromTargetTableRowPosition: number = sheetSize.height - 1
+        const toTargetTableRowPosition: number = sheetSize.height + bottomHeight
+        const targetTableHeight: number = toTargetTableRowPosition - fromTargetTableRowPosition + 1
+
+        const selectTargetTable = [fromTargetTableRowPosition, 1, targetTableHeight, sheetSize.width] as const
+        return this.sheet.getRange(...selectTargetTable)
     }
 
-    public pushColumnTable(targetRange: Spreadsheet.Range, workTableWidth: number, workTableNum: number, currentColumn: number, loopCounter: number = 1): void {
-
-        this.errorHandler.checkInfiniteLoop(loopCounter)
-
-        if (workTableNum < loopCounter) {
-            return
-        }
-        this.copyTo(targetRange, 1, currentColumn)
-
-        currentColumn = currentColumn + workTableWidth
-        loopCounter ++
-
-        return this.pushColumnTable(targetRange, workTableWidth, workTableNum, currentColumn, loopCounter)
-    }
-
-    public getInsertItems(tableDateInfo: {[key: string]: number}, currentDate: number = 1, insertItems: string[][] = []): string[][] {
-
-        this.errorHandler.checkInfiniteLoop(currentDate)
+    private assemble(currentTargetTable: Spreadsheet.Range, tableDateInfo: Associative, currentRow: number, currentDate: number = 1, dateValues: string[][] = []): string[][] {
 
         if (tableDateInfo.endOfMonth < currentDate) {
-            return insertItems
+            this.tableOperateModel.deleteAddress(currentRow)
+            return dateValues
         }
 
-        const currentWeek: number = this.getWeekNum(tableDateInfo, currentDate)
+        const currentWeekIndex: number = this.dateTableModel.getWeekIndex(tableDateInfo.year, tableDateInfo.month, currentDate)
+        
+        if (this.canInsert(tableDateInfo, currentWeekIndex)) {
+            currentRow ++
 
-        if (this.canInsert(tableDateInfo, currentWeek)) {
-            insertItems.push([String(currentDate), this.getCurrentWeek(currentWeek)])
+            this.tableOperateModel.duplicateAddress(currentTargetTable, currentRow, 1)
+            currentTargetTable = currentTargetTable.offset(1, 0)
+
+            dateValues.push([String(currentDate)])
         }
         currentDate ++
 
-        return this.getInsertItems(tableDateInfo, currentDate, insertItems)
+        return this.assemble(currentTargetTable, tableDateInfo, currentRow, currentDate, dateValues)
     }
 
-    private canInsert(tableDateInfo: {[key: string]: number}, currentWeek: number): boolean {
+    private canInsert(tableDateInfo: Associative, currentWeekIndex: number): boolean {
 
-        if (tableDateInfo.weekRule === 0 || tableDateInfo.weekRule === currentWeek) {
+        if (tableDateInfo.weekRule === 0 || tableDateInfo.weekRule === currentWeekIndex) {
             return true
         }
         return false
-    }
-
-    private getCurrentWeek(currentWeek: number): string {
-
-        const WEEK = ['日', '月', '火', '水', '木', '金', '土', '日']
-        return WEEK[currentWeek - 1]
-    }
-
-    private getWeekNum(tableDateInfo: {[key: string]: number}, currentDate: number): number {
-
-        const date: Date = new Date(tableDateInfo.year, tableDateInfo.month - 1, currentDate)
-        return date.getDay() + 1
     }
 }

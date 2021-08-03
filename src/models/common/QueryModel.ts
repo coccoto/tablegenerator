@@ -39,7 +39,7 @@ export default class QueryModel {
         return this.iniValues[itemName]
     }
 
-    public getSheetSize(): {[key: string]: number} {
+    public getSheetSize(): Associative {
 
         const toRowPoint: Spreadsheet.Range = this.sheet.getRange(this.sheet.getMaxRows(), 1)
         const toColumnPoint: Spreadsheet.Range = this.sheet.getRange(1, this.sheet.getMaxColumns())

@@ -16,7 +16,7 @@ export default class TableReferenceModel {
         this.queryModel = queryModel
     }
 
-    public bundleIniValues(): {[key: string]: number} {
+    public bundleIniValues(): Associative {
 
         const bottomHeight: number = Number(this.queryModel.getIniValue('bottomHeight'))
         const weekRule: number = Number(this.queryModel.getIniValue('createTableWeekRule'))
@@ -34,13 +34,14 @@ export default class TableReferenceModel {
         return this.sheet.getRange(row, column, height, width)
     }
 
-    public insertRecord(targetRow: number, addNum: number): void {
+    public isCreated(targetRow: number, targetColumn: number): boolean {
 
-        this.sheet.insertRowsBefore(targetRow, addNum)
-    }
+        const targetPoint: Spreadsheet.Range = this.selectTable(targetRow, targetColumn)
+        const value: string = targetPoint.getValue()
 
-    public setValues(targetRange: Spreadsheet.Range, values: string[][] ): void {
-
-        targetRange.setValues(values)
+        if (value === '') {
+            return true
+        }
+        return false
     }
 }
