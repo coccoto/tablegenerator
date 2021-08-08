@@ -3,7 +3,7 @@ import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
 import type QueryModel from '@src/models/common/QueryModel'
 
-export default class TableReferenceModel {
+export default class HelperModel {
 
     private readonly sheet: Spreadsheet.Sheet
 
@@ -39,7 +39,7 @@ export default class TableReferenceModel {
         const targetPoint: Spreadsheet.Range = this.selectTable(targetRow, targetColumn)
         const value: string = targetPoint.getValue()
 
-        if (value === '') {
+        if (value !== '') {
             return true
         }
         return false

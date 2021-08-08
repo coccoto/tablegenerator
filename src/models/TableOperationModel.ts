@@ -1,7 +1,7 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 
-export default class TableOperateModel {
+export default class TableOperationModel {
 
     private readonly sheet: Spreadsheet.Sheet
 

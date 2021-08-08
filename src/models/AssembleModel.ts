@@ -3,7 +3,7 @@ import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
 import type QueryModel from '@src/models/common/QueryModel'
 import DateTableModel from '@src/models/DateTableModel'
-import TableOperateModel from "@src/models/TableOperateModel"
+import TableOperationModel from "@src/models/TableOperationModel"
 
 export default class AssembleModel {
 
@@ -11,7 +11,7 @@ export default class AssembleModel {
 
     private readonly queryModel: QueryModel
     private readonly dateTableModel: DateTableModel
-    private readonly tableOperateModel: TableOperateModel
+    private readonly tableOperationModel: TableOperationModel
 
     public constructor(sheet: Spreadsheet.Sheet, queryModel: QueryModel) {
 
@@ -19,7 +19,7 @@ export default class AssembleModel {
 
         this.queryModel = queryModel
         this.dateTableModel = new DateTableModel(this.sheet, this.queryModel)
-        this.tableOperateModel = new TableOperateModel(this.sheet)
+        this.tableOperationModel = new TableOperationModel(this.sheet)
     }
 
     public main(sheetSize: Associative, tableDateInfo: Associative, bottomHeight: number): string[][] {
@@ -41,7 +41,7 @@ export default class AssembleModel {
     private assemble(currentTargetTable: Spreadsheet.Range, tableDateInfo: Associative, currentRow: number, currentDate: number = 1, dateValues: string[][] = []): string[][] {
 
         if (tableDateInfo.endOfMonth < currentDate) {
-            this.tableOperateModel.deleteAddress(currentRow)
+            this.tableOperationModel.deleteAddress(currentRow)
             return dateValues
         }
 
@@ -50,7 +50,7 @@ export default class AssembleModel {
         if (this.canInsert(tableDateInfo, currentWeekIndex)) {
             currentRow ++
 
-            this.tableOperateModel.duplicateAddress(currentTargetTable, currentRow, 1)
+            this.tableOperationModel.duplicateAddress(currentTargetTable, currentRow, 1)
             currentTargetTable = currentTargetTable.offset(1, 0)
 
             dateValues.push([String(currentDate)])

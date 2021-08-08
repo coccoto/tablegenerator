@@ -6,7 +6,7 @@ import QueryModel from '@src/models/common/QueryModel'
 import AssembleModel from '@src/models/AssembleModel'
 import DateTableModel from '@src/models/DateTableModel'
 import ReflectionModel from '@src/models/ReflectionModel'
-import TableReferenceModel from '@src/models/TableReferenceModel'
+import HelperModel from '@src/models/HelperModel'
 import WorkTableModel from '@src/models/WorkTableModel'
 
 export default class IndexController {
@@ -18,7 +18,7 @@ export default class IndexController {
     private readonly assembleModel: AssembleModel
     private readonly dateTableModel: DateTableModel
     private readonly reflectionModel: ReflectionModel
-    private readonly tableReferenceModel: TableReferenceModel
+    private readonly helperModel: HelperModel
     private readonly workTableModel: WorkTableModel
 
     public constructor() {
@@ -30,19 +30,20 @@ export default class IndexController {
         this.assembleModel = new AssembleModel(this.sheet, this.queryModel)
         this.dateTableModel = new DateTableModel(this.sheet, this.queryModel)
         this.reflectionModel = new ReflectionModel(this.sheet)
-        this.tableReferenceModel = new TableReferenceModel(this.sheet, this.queryModel)
+        this.helperModel = new HelperModel(this.sheet, this.queryModel)
         this.workTableModel = new WorkTableModel(this.sheet, this.queryModel)
     }
 
     public main(): void {
 
-        const iniValues: Associative = this.tableReferenceModel.bundleIniValues()
+        const iniValues: Associative = this.helperModel.bundleIniValues()
         const dateWorkTableIniPosition: Associative = this.dateTableModel.getDateWorkTableIniPosition()
 
-        if (this.tableReferenceModel.isCreated(dateWorkTableIniPosition.row, dateWorkTableIniPosition.column)) {
-            this.baseGenerate(iniValues.bottomHeight, iniValues.workTableNum)
-            this.insertRecord(iniValues.bottomHeight, iniValues.weekRule)
+        if (this.helperModel.isCreated(dateWorkTableIniPosition.row, dateWorkTableIniPosition.column)) {
+            return
         }
+        this.baseGenerate(iniValues.bottomHeight, iniValues.workTableNum)
+        this.insertRecord(iniValues.bottomHeight, iniValues.weekRule)
     }
 
     private baseGenerate(bottomHeight: number, workTableNum: number): void {

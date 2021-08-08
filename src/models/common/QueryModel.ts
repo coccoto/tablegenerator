@@ -24,8 +24,8 @@ export default class QueryModel {
 
         const iniSheet: Spreadsheet.Sheet = this.errorHandler.checkSheet(SpreadsheetApp.getActiveSpreadsheet().getSheetByName('ini'))
 
-        const range = iniSheet.getRange('A:B')
-        const values = range.getValues()
+        const targetRange = iniSheet.getRange('A:B')
+        const values = targetRange.getValues()
 
         for (let i = 0; i < values.length; i ++) {
 

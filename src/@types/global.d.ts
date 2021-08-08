@@ -1,3 +1,3 @@
 declare const global: {
-    TableGenerator: object,
+    main: object,
 }

@@ -2,21 +2,24 @@
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
 import ErrorHandler from "@src/models/common/ErrorHandler"
-import TableOperateModel from "@src/models/TableOperateModel"
+import HeaderModel from "@src/models/HeaderModel"
+import TableOperationModel from "@src/models/TableOperationModel"
 
 export default class ReflectionModel {
 
     private readonly sheet: Spreadsheet.Sheet
 
     private readonly errorHandler: ErrorHandler
-    private readonly tableOperateModel: TableOperateModel
+    private readonly headerModel: HeaderModel
+    private readonly tableOperationModel: TableOperationModel
 
     public constructor(sheet: Spreadsheet.Sheet) {
 
         this.sheet = sheet
 
         this.errorHandler = new ErrorHandler()
-        this.tableOperateModel = new TableOperateModel(this.sheet)
+        this.headerModel = new HeaderModel(this.sheet, this.errorHandler)
+        this.tableOperationModel = new TableOperationModel(this.sheet)
     }
 
     public main(workTableNum: number, workTableIniPosition: Associative, workTableSize: Associative, optionWorkTableIniPosition: Associative): void {
@@ -27,26 +30,50 @@ export default class ReflectionModel {
         const allWorkTableWidth: number = workTableNum * workTableSize.width
         const fromOptionWorkTableColumnPosition: number = allWorkTableWidth + workTableIniPosition.column
 
-        this.tableOperateModel.moveAddress(optionWorkTable, 1, fromOptionWorkTableColumnPosition)
+        this.tableOperationModel.moveAddress(optionWorkTable, 1, fromOptionWorkTableColumnPosition)
 
         const selectWorkTable = [workTableIniPosition.row, workTableIniPosition.column, workTableSize.height, workTableSize.width] as const
         const workTable: Spreadsheet.Range = this.sheet.getRange(...selectWorkTable)
 
-        this.pushWorkTable(workTable, workTableNum, workTableSize.width, workTableIniPosition.column)
+        const headerItems: string[][] = this.headerModel.getHeaderItems()
+
+        this.pushWorkTable(workTable, headerItems, workTableNum, workTableSize.width, workTableIniPosition.column)
     }
 
-    private pushWorkTable(workTable: Spreadsheet.Range, workTableNum: number, workTalbeWidth: number, currentColumn: number, currentCount: number = 1): void {
+    private pushWorkTable(workTable: Spreadsheet.Range, headerItems: string[][], workTableNum: number, workTalbeWidth: number, currentColumn: number, currentCount: number = 1): void {
 
         this.errorHandler.checkInfiniteLoop(currentCount)
 
         if (workTableNum < currentCount) {
             return
         }
-        this.tableOperateModel.duplicateAddress(workTable, 1, currentColumn)
+        this.tableOperationModel.duplicateAddress(workTable, 1, currentColumn)
+        this.decorateHeader(headerItems, workTalbeWidth, currentColumn, currentCount)
 
         currentColumn = currentColumn + workTalbeWidth
         currentCount ++
 
-        return this.pushWorkTable(workTable, workTableNum, workTalbeWidth, currentColumn, currentCount)
+        return this.pushWorkTable(workTable, headerItems, workTableNum, workTalbeWidth, currentColumn, currentCount)
+    }
+
+    private decorateHeader(headerItems: string[][], workTalbeWidth: number, currentColumn: number, currentCount: number): void {
+
+        const headerRange: Spreadsheet.Range = this.sheet.getRange(1, currentColumn, 1, workTalbeWidth)
+        const index = currentCount - 1
+        headerRange.setValue(headerItems[index][0])
+
+        if (headerItems[index][1]) {
+            const optionRange: Spreadsheet.Range = headerRange.offset(1, 0)
+            this.setReverseMode(optionRange, workTalbeWidth)
+        }
+        
+    }
+
+    private setReverseMode(targetRange: Spreadsheet.Range, workTalbeWidth: number): void {
+
+        const targetColors: string[][] = targetRange.getBackgrounds()
+        const index = workTalbeWidth - 1
+        const mainColor: string = targetColors[0][index]
+        targetRange.setBackground(mainColor)
     }
 }
