@@ -39,7 +39,7 @@ export default class DateTableModel {
 
     private endOfMonth(tableDate: Associative): number {
 
-        const date = new Date(tableDate.year, tableDate.month - 1, 0)
+        const date = new Date(tableDate.year, tableDate.month, 0)
         return date.getDate()
     }
 
