@@ -1,7 +1,7 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
-import type ErrorHandler from '@src/models/common/ErrorHandler'
+import type ErrorHandler from '@/models/common/ErrorHandler'
 
 export default class QueryModel {
 

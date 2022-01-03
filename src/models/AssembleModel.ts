@@ -1,9 +1,9 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
-import type QueryModel from '@src/models/common/QueryModel'
-import DateTableModel from '@src/models/DateTableModel'
-import TableOperationModel from "@src/models/TableOperationModel"
+import type QueryModel from '@/models/common/QueryModel'
+import DateTableModel from '@/models/DateTableModel'
+import TableOperationModel from '@/models/TableOperationModel'
 
 export default class AssembleModel {
 

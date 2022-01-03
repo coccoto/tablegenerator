@@ -8,8 +8,7 @@
     "clasp:push": "clasp push",
     "build:development": "webpack --mode development",
     "build:production": "webpack --mode production",
-    "deploy": "run-s build:production clasp:push",
-    "test": "webpack"
+    "release": "run-s build:production clasp:push"
   },
   "keywords": [],
   "author": "",

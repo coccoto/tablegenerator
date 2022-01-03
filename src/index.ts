@@ -1,5 +1,5 @@
 // controllers
-import IndexController from '@src/controllers/IndexController'
+import IndexController from '@/controllers/IndexController'
 
 const run = (): void => {
     const indexController: IndexController = new IndexController()

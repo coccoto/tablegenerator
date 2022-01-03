@@ -1,9 +1,9 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
-import ErrorHandler from "@src/models/common/ErrorHandler"
-import HeaderModel from "@src/models/HeaderModel"
-import TableOperationModel from "@src/models/TableOperationModel"
+import ErrorHandler from "@/models/common/ErrorHandler"
+import HeaderModel from "@/models/HeaderModel"
+import TableOperationModel from "@/models/TableOperationModel"
 
 export default class ReflectionModel {
 

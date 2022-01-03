@@ -1,7 +1,7 @@
 // declares
 import Spreadsheet = GoogleAppsScript.Spreadsheet
 // models
-import type QueryModel from '@src/models/common/QueryModel'
+import type QueryModel from '@/models/common/QueryModel'
 
 export default class WorkTableModel {
 
