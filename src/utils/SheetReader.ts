@@ -10,10 +10,10 @@ export default class SheetReader {
         if (sheet === null) {
             throw new Error()
         }
-        const sheetValueList = sheet.getRange('A:B').getValues()
+        const sheetRowList = sheet.getRange('A:B').getValues()
 
-        for (const sheetValue of sheetValueList) {
-            result[sheetValue[0]] = sheetValue[1]
+        for (const sheetValueList of sheetRowList) {
+            result[sheetValueList[0]] = sheetValueList[1]
         }
         return result
     }

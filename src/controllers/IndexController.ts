@@ -33,8 +33,8 @@ export default class IndexController {
         const outputYearMonthList = this.indexService.getOutputYearMonthList()
 
         // テーブルに年月を入力する
-        const targetRange = this.sheet.getRange(startRow, startColumn, outputYearMonthList.length, yearMonthColumnWidth)
-        targetRange.setValues(outputYearMonthList)
+        const yearMonthRange = this.sheet.getRange(startRow, startColumn, outputYearMonthList.length, yearMonthColumnWidth) // A1:B1
+        yearMonthRange.setValues(outputYearMonthList)
     }
 
     /**
@@ -52,7 +52,7 @@ export default class IndexController {
         // テーブルに行を追加する
         this.sheet.insertRowsAfter(startRow, outputDateList.length - 1) 
         // テーブルに日付を入力する
-        const targetRange = this.sheet.getRange(startRow, startColumn, outputDateList.length, dateColumnWidth)
-        targetRange.setValues(outputDateList)
+        const dateRange = this.sheet.getRange(startRow, startColumn, outputDateList.length, dateColumnWidth) // A3:B{i}
+        dateRange.setValues(outputDateList)
     }
 }
